@@ -75,6 +75,87 @@ void insertPosition(int value, int pos) {
     printf("Node inserted at position %d.\n", pos);
 }
 
+// Delete from Beginning
+void deleteBeginning() {
+    struct Node *temp;
+
+    if (head == NULL) {
+        printf("Linked List is Empty.\n");
+        return;
+    }
+
+    temp = head;
+    head = head->next;
+    free(temp);
+
+    printf("Node deleted from beginning.\n");
+}
+
+// Delete from End
+void deleteEnd() {
+    struct Node *temp, *prev;
+
+    if (head == NULL) {
+        printf("Linked List is Empty.\n");
+        return;
+    }
+
+    if (head->next == NULL) {
+        free(head);
+        head = NULL;
+        printf("Node deleted from end.\n");
+        return;
+    }
+
+    temp = head;
+
+    while (temp->next != NULL) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    prev->next = NULL;
+    free(temp);
+
+    printf("Node deleted from end.\n");
+}
+
+// Delete from Position
+void deletePosition(int pos) {
+    struct Node *temp, *prev;
+    int i;
+
+    if (head == NULL) {
+        printf("Linked List is Empty.\n");
+        return;
+    }
+
+    if (pos == 1) {
+        temp = head;
+        head = head->next;
+        free(temp);
+        printf("Node deleted from position %d.\n", pos);
+        return;
+    }
+
+    temp = head;
+
+    for (i = 1; i < pos && temp != NULL; i++) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Invalid Position!\n");
+        return;
+    }
+
+    prev->next = temp->next;
+    free(temp);
+
+    printf("Node deleted from position %d.\n", pos);
+}
+
 // Display Linked List
 void display() {
     struct Node *temp = head;
@@ -98,12 +179,15 @@ int main() {
     int choice, value, pos;
 
     while (1) {
-        printf("\n===== Singly Linked List Menu =====\n");
+        printf("\n========== Singly Linked List ==========\n");
         printf("1. Insert at Beginning\n");
         printf("2. Insert at End\n");
         printf("3. Insert at Position\n");
-        printf("4. Display\n");
-        printf("5. Exit\n");
+        printf("4. Delete from Beginning\n");
+        printf("5. Delete from End\n");
+        printf("6. Delete from Position\n");
+        printf("7. Display\n");
+        printf("8. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -130,15 +214,37 @@ int main() {
                 break;
 
             case 4:
-                display();
+                deleteBeginning();
                 break;
 
             case 5:
-                printf("Exiting Program...\n");
-                exit(0);
+                deleteEnd();
+                break;
+
+            case 6:
+                printf("Enter position: ");
+                scanf("%d", &pos);
+                deletePosition(pos);
+                break;
+
+            case 7:
+                display();
+                break;
+
+            case 8:
+                printf("Program Exited.\n");
+
+                // Free remaining nodes before exiting
+                while (head != NULL) {
+                    struct Node *temp = head;
+                    head = head->next;
+                    free(temp);
+                }
+
+                return 0;
 
             default:
-                printf("Invalid Choice! Please try again.\n");
+                printf("Invalid Choice! Please enter a valid option.\n");
         }
     }
 
