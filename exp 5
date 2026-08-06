@@ -1,0 +1,84 @@
+
+#include <stdio.h>
+
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *head = NULL; 
+
+void insertBeginning(int value) {
+    struct Node *newnode;
+    newnode = (struct Node *) malloc(sizeof(struct Node));
+    newnode->data = value;
+    newnode->next = head;
+    head = newnode;
+}
+
+void insertEnd(int value) {
+    struct Node *newnode, *temp;
+    newnode = (struct Node *) malloc(sizeof(struct Node));
+    newnode->data = value;
+    newnode->next = NULL;
+    
+    if (head == NULL) {
+        head = newnode;
+    } else {
+        temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newnode;
+    }
+}
+
+void insertPosition(int value, int pos) {
+    struct Node *newnode, *temp;
+    int i;
+    newnode = (struct Node *) malloc(sizeof(struct Node));
+    newnode->data = value;
+    newnode->next = NULL;
+
+    if (pos == 1) {
+        newnode->next = head;
+        head = newnode;
+    } else {
+        temp = head;
+        for (i = 1; i < pos - 1 && temp != NULL; i++) {
+            temp = temp->next;
+        }
+
+        if (temp == NULL) {
+            printf("Invalid Position \n");
+            free(newnode);
+            return;
+        }
+
+        newnode->next = temp->next;
+        temp->next = newnode;
+    }
+}
+
+void display() {
+    struct Node *temp;
+    temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    insertBeginning(20);
+    insertBeginning(10);
+    insertEnd(30);
+    insertEnd(40);
+    
+    insertPosition(25, 3);
+    display();
+    
+    return 0;
+}
