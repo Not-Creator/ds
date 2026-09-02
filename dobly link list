@@ -1,0 +1,227 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+// INSERT AT BEGINNING
+void insertBeginning(int x)
+{
+    struct Node *newNode = malloc(sizeof(struct Node));
+
+    newNode->data = x;
+    newNode->prev = NULL;
+    newNode->next = head;
+
+    if (head != NULL)
+        head->prev = newNode;
+
+    head = newNode;
+}
+
+// INSERT AT END
+void insertEnd(int x)
+{
+    struct Node *newNode = malloc(sizeof(struct Node));
+    struct Node *temp = head;
+
+    newNode->data = x;
+    newNode->next = NULL;
+
+    if (head == NULL)
+    {
+        newNode->prev = NULL;
+        head = newNode;
+        return;
+    }
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+// INSERT AT POSITION
+void insertPosition(int x, int pos)
+{
+    struct Node *newNode;
+    struct Node *temp = head;
+    int i;
+
+    newNode = malloc(sizeof(struct Node));
+    newNode->data = x;
+
+    if (pos == 1)
+    {
+        newNode->prev = NULL;
+        newNode->next = head;
+
+        if (head != NULL)
+            head->prev = newNode;
+
+        head = newNode;
+        return;
+    }
+
+    for (i = 1; i < pos - 1; i++)
+        temp = temp->next;
+
+    newNode->next = temp->next;
+    newNode->prev = temp;
+
+    if (temp->next != NULL)
+        temp->next->prev = newNode;
+
+    temp->next = newNode;
+}
+
+// DELETE FROM BEGINNING
+void deleteBeginning()
+{
+    struct Node *temp;
+
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    temp = head;
+    head = head->next;
+
+    if (head != NULL)
+        head->prev = NULL;
+
+    free(temp);
+}
+
+// DELETE FROM END
+void deleteEnd()
+{
+    struct Node *temp = head;
+
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    if (temp->prev != NULL)
+        temp->prev->next = NULL;
+    else
+        head = NULL;
+
+    free(temp);
+}
+
+// DELETE FROM POSITION
+void deletePosition(int pos)
+{
+    struct Node *temp = head;
+    int i;
+
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    if (pos == 1)
+    {
+        deleteBeginning();
+        return;
+    }
+
+    for (i = 1; i < pos; i++)
+        temp = temp->next;
+
+    if (temp->prev != NULL)
+        temp->prev->next = temp->next;
+
+    if (temp->next != NULL)
+        temp->next->prev = temp->prev;
+
+    free(temp);
+}
+
+// DISPLAY FORWARD
+void display()
+{
+    struct Node *temp = head;
+
+    while (temp != NULL)
+    {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("NULL\n");
+}
+
+// DISPLAY BACKWARD
+void reverseDisplay()
+{
+    struct Node *temp = head;
+
+    if (temp == NULL)
+        return;
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    while (temp != NULL)
+    {
+        printf("%d <-> ", temp->data);
+        temp = temp->prev;
+    }
+
+    printf("NULL\n");
+}
+
+// MAIN
+int main()
+{
+    insertBeginning(20);
+    insertBeginning(10);
+
+    insertEnd(30);
+    insertEnd(40);
+
+    printf("Forward: ");
+    display();
+
+    insertPosition(25, 3);
+
+    printf("After inserting 25 at position 3:\n");
+    display();
+
+    deleteBeginning();
+
+    printf("After deleting beginning:\n");
+    display();
+
+    deleteEnd();
+
+    printf("After deleting end:\n");
+    display();
+
+    deletePosition(2);
+
+    printf("After deleting position 2:\n");
+    display();
+
+    printf("Backward: ");
+    reverseDisplay();
+
+    return 0;
+}
